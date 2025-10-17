@@ -3,7 +3,7 @@
 A Minecraft Forge mod that adds a customizable large backpack with scrollable inventory.
 
 ![Minecraft Version](https://img.shields.io/badge/Minecraft-1.20.1-brightgreen)
-![Forge Version](https://img.shields.io/badge/Forge-47.3.0-orange)
+![Forge Version](https://img.shields.io/badge/Forge-47.4.0-orange)
 ![License](https://img.shields.io/badge/License-MIT-blue)
 
 ## 🌟 Features
@@ -18,7 +18,7 @@ A Minecraft Forge mod that adds a customizable large backpack with scrollable in
 
 ## 📥 Installation
 
-1. Download [Forge 1.20.1 (47.3.0)](https://files.minecraftforge.net/)
+1. Download [Forge 1.20.1 (47.4.0)](https://files.minecraftforge.net/)
 2. Download the latest release from [Releases](../../releases)
 3. Place the `.jar` file in your `mods` folder
 4. Launch Minecraft with Forge profile
@@ -128,7 +128,7 @@ AddLargeBackpack/
 
 ### Requirements
 - Minecraft: `1.20.1`
-- Forge: `47.3.0` or higher
+- Forge: `47.4.0` or higher
 - Java: `17` or higher
 
 ## 📄 License
