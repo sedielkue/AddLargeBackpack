@@ -66,7 +66,7 @@ public class BackpackContainer extends AbstractContainerMenu {
             ItemStack itemstack1 = slot.getItem();
             itemstack = itemstack1.copy();
             
-            int visibleBackpackSlots = VISIBLE_ROWS * 9; // Always 54 visible slots
+            int visibleBackpackSlots = VISIBLE_ROWS * 9; // 54 visible slots
             
             if (index < visibleBackpackSlots) {
                 // Moving from backpack to player inventory
@@ -75,7 +75,8 @@ public class BackpackContainer extends AbstractContainerMenu {
                 }
             } else {
                 // Moving from player inventory to backpack
-                if (!this.moveItemStackTo(itemstack1, 0, visibleBackpackSlots, false)) {
+                // Try to move to the entire backpack inventory (not just visible slots)
+                if (!moveToBackpackInventory(itemstack1)) {
                     return ItemStack.EMPTY;
                 }
             }
@@ -88,6 +89,57 @@ public class BackpackContainer extends AbstractContainerMenu {
         }
         
         return itemstack;
+    }
+    
+    /**
+     * Moves items to the backpack inventory, checking all slots (including non-visible ones).
+     * @param stack The item stack to move
+     * @return true if at least some items were moved, false otherwise
+     */
+    private boolean moveToBackpackInventory(ItemStack stack) {
+        if (stack.isEmpty()) {
+            return false;
+        }
+        
+        boolean movedSome = false;
+        
+        // First pass: try to merge with existing stacks
+        for (int i = 0; i < backpackSlots; i++) {
+            ItemStack slotStack = backpackInventory.getItem(i);
+            if (!slotStack.isEmpty() && ItemStack.isSameItemSameTags(slotStack, stack)) {
+                int maxStackSize = Math.min(stack.getMaxStackSize(), backpackInventory.getMaxStackSize());
+                int transferAmount = Math.min(stack.getCount(), maxStackSize - slotStack.getCount());
+                
+                if (transferAmount > 0) {
+                    slotStack.grow(transferAmount);
+                    stack.shrink(transferAmount);
+                    backpackInventory.setChanged();
+                    movedSome = true;
+                    
+                    if (stack.isEmpty()) {
+                        return true;
+                    }
+                }
+            }
+        }
+        
+        // Second pass: try to place in empty slots
+        for (int i = 0; i < backpackSlots; i++) {
+            ItemStack slotStack = backpackInventory.getItem(i);
+            if (slotStack.isEmpty() && backpackInventory.canPlaceItem(i, stack)) {
+                int transferAmount = Math.min(stack.getCount(), stack.getMaxStackSize());
+                ItemStack newStack = stack.split(transferAmount);
+                backpackInventory.setItem(i, newStack);
+                backpackInventory.setChanged();
+                movedSome = true;
+                
+                if (stack.isEmpty()) {
+                    return true;
+                }
+            }
+        }
+        
+        return movedSome;
     }
 
     @Override
